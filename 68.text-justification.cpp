@@ -20,7 +20,7 @@ public:
                 }
                 line += words[k];
             }
-            
+
             line += string(maxWidth - line.size(), ' ');
             result.push_back(line);
         }

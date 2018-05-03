@@ -7,14 +7,14 @@ public:
             if(i == "+" || i == "-" || i == "*" || i == "/") {
                 int num2 = s.top();
                 s.pop();
-                int num1 = s.top(); 
+                int num1 = s.top();
                 s.pop();
                 if(i == "+")
                     s.push(num1 + num2);
                 else if(i == "-")
                     s.push(num1 - num2);
                 else if(i == "*")
-                    s.push(num1 * num2); 
+                    s.push(num1 * num2);
                 else
                     s.push(num1 / num2);
             }

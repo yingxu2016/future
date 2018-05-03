@@ -4,14 +4,14 @@ private:
 public:
     /** Initialize your data structure here. */
     TwoSum() {
-        
+
     }
-    
+
     /** Add the number to an internal data structure.. */
     void add(int number) {
         m[number]++;
     }
-    
+
     /** Find if there exists any pair of numbers which sum is equal to the value. */
     bool find(int value) {
         for(auto i : m) {
@@ -38,18 +38,18 @@ private:
 public:
     /** Initialize your data structure here. */
     TwoSum() {
-        
+
     }
-    
+
     /** Add the number to an internal data structure.. */
     void add(int number) {
         for(auto i : nums) {
             vals.insert(i + number);
         }
         nums.insert(number);
-        
+
     }
-    
+
     /** Find if there exists any pair of numbers which sum is equal to the value. */
     bool find(int value) {
         return vals.count(value);

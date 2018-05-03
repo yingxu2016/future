@@ -32,5 +32,5 @@ public:
         if (minLen != INT_MAX)
             return s.substr(minStart, minLen);
         return "";
-        }
+    }
 };

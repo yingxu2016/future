@@ -12,7 +12,9 @@ public:
     vector<Interval> merge(vector<Interval>& intervals) {
         vector<Interval> ans;
         if(intervals.empty()) return ans;
-        sort(intervals.begin(), intervals.end(), [](Interval a, Interval b) {return a.start < b.start;});
+        sort(intervals.begin(), intervals.end(), [](Interval a, Interval b) {
+            return a.start < b.start;
+        });
         Interval curr = intervals[0];
         for(int i = 1; i < intervals.size(); i++) {
             if(curr.end < intervals[i].start) {

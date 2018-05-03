@@ -9,11 +9,11 @@
  */
 class Solution {
 public:
-    bool isValid(TreeNode* root, TreeNode* l=NULL, TreeNode* r=NULL){
+    bool isValid(TreeNode* root, TreeNode* l=NULL, TreeNode* r=NULL) {
         if(!root) return true;
         if (l != NULL and root->val <= l->val) return false;
         if (r != NULL and root->val >= r->val) return false;
-        return (isValid(root->left,l,root))&&(isValid(root->right,root,r));        
+        return (isValid(root->left,l,root))&&(isValid(root->right,root,r));
     }
     bool isValidBST(TreeNode* root) {
         return isValid(root);

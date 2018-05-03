@@ -1,7 +1,7 @@
 class Solution {
 public:
     void reverseWords(vector<char>& str) {
-        if(str.empty()) 
+        if(str.empty())
             return;
         int l = 0;
         int r = str.size() - 1;

@@ -6,7 +6,7 @@ public:
         int R = matrix.size(), C = matrix[0].size();
         bool seen[R][C];
         for(auto i = 0; i < R; i++)
-            for(auto j = 0; j < C; j++)  
+            for(auto j = 0; j < C; j++)
                 seen[i][j] = false;
         int dr[] = {0, 1, 0, -1};
         int dc[] = {1, 0, -1, 0};
@@ -16,7 +16,7 @@ public:
             seen[r][c] = true;
             int cr = r + dr[di];
             int cc = c + dc[di];
-            if (0 <= cr && cr < R && 0 <= cc && cc < C && !seen[cr][cc]){
+            if (0 <= cr && cr < R && 0 <= cc && cc < C && !seen[cr][cc]) {
                 r = cr;
                 c = cc;
             } else {

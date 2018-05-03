@@ -29,7 +29,7 @@ public:
                     s[i] = c;
                 }
             }
-            swap(tmp, q1);        
+            swap(tmp, q1);
         }
         return 0;
     }

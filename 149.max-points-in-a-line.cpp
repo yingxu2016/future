@@ -9,7 +9,7 @@
  */
 class Solution {
 public:
-int maxPoints(vector<Point> &points) {
+    int maxPoints(vector<Point> &points) {
         if(points.size()<2) return points.size();
         int result=0;
         for(int i=0; i<points.size(); i++) {
@@ -27,7 +27,7 @@ int maxPoints(vector<Point> &points) {
                     lines[make_pair(a, b)]++;
                     localmax=max(lines[make_pair(a, b)], localmax);
                 }
-            }        
+            }
             result=max(result, localmax+overlap+1);
         }
         return result;

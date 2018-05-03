@@ -17,9 +17,9 @@ private:
     bool helper(TreeNode* n1, TreeNode* n2) {
         if(!n1 && !n2) return true;
         if(!n1 || !n2) return false;
-        return (n1->val == n2->val) 
-            && helper(n1->left, n2->right)
-            && helper(n1->right, n2->left);
+        return (n1->val == n2->val)
+               && helper(n1->left, n2->right)
+               && helper(n1->right, n2->left);
     }
 };
 
@@ -29,11 +29,11 @@ public:
         TreeNode *left, *right;
         if (!root)
             return true;
-        
+
         queue<TreeNode*> q1, q2;
         q1.push(root->left);
         q2.push(root->right);
-        while (!q1.empty() && !q2.empty()){
+        while (!q1.empty() && !q2.empty()) {
             left = q1.front();
             q1.pop();
             right = q2.front();
