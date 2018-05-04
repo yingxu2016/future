@@ -1,42 +1,70 @@
+// Source http://zxi.mytechroad.com/blog/dynamic-programming/leetcode-730-count-different-palindromic-subsequences/
+// Recursion with memoization
 class Solution {
 public:
-    int countPalindromicSubsequences(string S) {
-        int n = S.size();
-        int mod = 1000000007;
-        auto dp_ptr = new vector<vector<vector<int>>>(4, vector<vector<int>>(n, vector<int>(n)));
-        auto& dp = *dp_ptr;
+    int countPalindromicSubsequences(const string& S) {
+        int n = S.length();
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+        for (int i = 0; i < n; ++i)
+            dp[i][i] = 1;
 
-        for (int i = n-1; i >= 0; --i) {
-            for (int j = i; j < n; ++j) {
-                for (int k = 0; k < 4; ++k) {
-                    char c = 'a' + k;
-                    if (j == i) {
-                        if (S[i] == c) dp[k][i][j] = 1;
-                        else dp[k][i][j] = 0;
-                    } else { // j > i
-                        if (S[i] != c) dp[k][i][j] = dp[k][i+1][j];
-                        else if (S[j] != c) dp[k][i][j] = dp[k][i][j-1];
-                        else { // S[i] == S[j] == c
-                            if (j == i+1) dp[k][i][j] = 2; // "aa" : {"a", "aa"}
-                            else { // length is > 2
-                                dp[k][i][j] = 2;
-                                for (int m = 0; m < 4; ++m) { // count each one within subwindows [i+1][j-1]
-                                    dp[k][i][j] += dp[m][i+1][j-1];
-                                    dp[k][i][j] %= mod;
-                                }
-                            }
-                        }
-                    }
+        for (int len = 1; len <= n; ++len) {
+            for (int i = 0; i < n - len; ++i) {
+                const int j = i + len;
+                if (S[i] == S[j]) {
+                    dp[i][j] = dp[i + 1][j - 1] * 2;
+                    int l = i + 1;
+                    int r = j - 1;
+                    while (l <= r && S[l] != S[i]) ++l;
+                    while (l <= r && S[r] != S[i]) --r;
+                    if (l == r) dp[i][j] += 1;
+                    else if (l > r) dp[i][j] += 2;
+                    else dp[i][j] -= dp[l + 1][r - 1];
+                } else {
+                    dp[i][j] = dp[i][j - 1] + dp[i + 1][j] - dp[i + 1][j - 1];
                 }
+
+                dp[i][j] = (dp[i][j] + kMod) % kMod;
             }
         }
 
-        int ans = 0;
-        for (int k = 0; k < 4; ++k) {
-            ans += dp[k][0][n-1];
-            ans %= mod;
+        return dp[0][n - 1];
+    }
+private:
+    static constexpr long kMod = 1000000007;
+};
+
+// DP
+class Solution2 {
+public:
+    int countPalindromicSubsequences(const string& S) {
+        int n = S.length();
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+        for (int i = 0; i < n; ++i)
+            dp[i][i] = 1;
+
+        for (int len = 1; len <= n; ++len) {
+            for (int i = 0; i < n - len; ++i) {
+                const int j = i + len;
+                if (S[i] == S[j]) {
+                    dp[i][j] = dp[i + 1][j - 1] * 2;
+                    int l = i + 1;
+                    int r = j - 1;
+                    while (l <= r && S[l] != S[i]) ++l;
+                    while (l <= r && S[r] != S[i]) --r;
+                    if (l == r) dp[i][j] += 1;
+                    else if (l > r) dp[i][j] += 2;
+                    else dp[i][j] -= dp[l + 1][r - 1];
+                } else {
+                    dp[i][j] = dp[i][j - 1] + dp[i + 1][j] - dp[i + 1][j - 1];
+                }
+
+                dp[i][j] = (dp[i][j] + kMod) % kMod;
+            }
         }
 
-        return ans;
+        return dp[0][n - 1];
     }
+private:
+    static constexpr long kMod = 1000000007;
 };
