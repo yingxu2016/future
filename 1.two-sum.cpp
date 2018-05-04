@@ -4,7 +4,7 @@ public:
         vector<int> ans;
         unordered_map<int, int> s;
         for(int i = 0; i < nums.size(); i++) {
-            if(s.find(nums[i]) == s.end()) {
+            if(!s.count(nums[i])) {
                 s[target - nums[i]] = i;
             }
             else {
