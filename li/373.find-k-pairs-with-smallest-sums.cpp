@@ -9,7 +9,9 @@ public:
         int size2 = nums2.size();
         if (size1 <= 0 || size2 <= 0 || k <= 0)
             return result;
-        auto comp = [](pair<int, int> a, pair<int, int> b) {return a.first + a.second < b.first + b.second;};
+        auto comp = [](pair<int, int> a, pair<int, int> b) {
+            return a.first + a.second < b.first + b.second;
+        };
         priority_queue< pair<int, int>, vector< pair<int, int> >, decltype(comp)> que(comp);
         for (int i = 0; i < min(size1, k); i++)
         {
@@ -55,7 +57,7 @@ public:
         {
             pq.push(make_pair( i, 0));
         }
-        while(k-- > 0 && !pq.empty()){
+        while(k-- > 0 && !pq.empty()) {
             auto curr = pq.top();
             pq.pop();
             ret.push_back(curr);
