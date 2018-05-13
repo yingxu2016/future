@@ -4,8 +4,10 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <queue>
 using namespace std;
 
+// Store each input key and value
 struct KVPair
 {
     string key;
@@ -21,80 +23,14 @@ struct MinHeapNode
     int i;
 };
 
-// Prototype of a utility function to swap two min heap nodes
-void swap(MinHeapNode* x, MinHeapNode* y);
-
-// A class for Min Heap
-class MinHeap
-{
-    MinHeapNode* harr; // pointer to array of elements in heap
-    int heap_size;     // size of min heap
-
-public:
-    // Constructor: creates a min heap of given size
-    MinHeap(MinHeapNode a[], int size);
-
-    // to heapify a subtree with root at given index
-    void MinHeapify(int);
-
-    // to get index of left child of node at index i
-    int left(int i) { return (2 * i + 1); }
-
-    // to get index of right child of node at index i
-    int right(int i) { return (2 * i + 2); }
-
-    // to get the root
-    MinHeapNode getMin() {  return harr[0]; }
-
-    // to replace root with new node x and heapify()
-    // new root
-    void replaceMin(MinHeapNode x)
-    {
-        harr[0] = x;
-        MinHeapify(0);
+// Self defined comparator to sort first by key then by value
+auto comp = [](MinHeapNode& a, MinHeapNode& b){
+    if(stoi(a.element.key) == stoi(b.element.key)) {
+        return a.element.value > b.element.value;
     }
+    return a.element.key > b.element.key;
 };
-
-// Constructor: Builds a heap from a given array a[]
-// of given size
-MinHeap::MinHeap(MinHeapNode a[], int size)
-{
-    heap_size = size;
-    harr = a; // store address of array
-    int i = (heap_size - 1) / 2;
-    while (i >= 0)
-    {
-        MinHeapify(i);
-        i--;
-    }
-}
-
-// A recursive method to heapify a subtree with root
-// at given index. This method assumes that the
-// subtrees are already heapified
-void MinHeap::MinHeapify(int i)
-{
-    int l = left(i);
-    int r = right(i);
-    int smallest = i;
-    if (l < heap_size && stoi(harr[l].element.key) < stoi(harr[i].element.key))
-        smallest = l;
-    if (r < heap_size && stoi(harr[r].element.key) < stoi(harr[smallest].element.key))
-        smallest = r;
-    if (smallest != i)
-    {
-        swap(&harr[i], &harr[smallest]);
-        MinHeapify(smallest);
-    }
-}
-
-// A utility function to swap two elements
-void swap(MinHeapNode* x, MinHeapNode* y)
-{
-    MinHeapNode temp = *x;
-    *x = *y;
-    *y = temp;
-}
+priority_queue<MinHeapNode, vector<MinHeapNode>, decltype(comp)> pq(comp);
 
 // Merges two subarrays of arr[].
 // First subarray is arr[l..m]
@@ -120,7 +56,12 @@ void merge(KVPair arr[], int l, int m, int r)
     k = l; // Initial index of merged subarray
     while (i < n1 && j < n2)
     {
-        arr[k++] = stoi(L[i].key) <= stoi(R[j].key) ? L[i++] : R[j++];
+        if(L[i].key == R[j].key) {
+            arr[k++] = L[i].value <= R[j].value ? L[i++] : R[j++];
+        }
+        else {
+            arr[k++] = L[i].key < R[j].key ? L[i++] : R[j++];
+        }
     }
 
     /* Copy the remaining elements of L[], if there
@@ -170,21 +111,18 @@ void mergeFiles(char *output_file, int n, int k)
     FILE* in[k];
     for (int i = 0; i < k; i++)
     {
-        char fileName[2];
+        char fileName[20];
 
         // convert i to string
-        snprintf(fileName, sizeof(fileName), "%d", i);
+        snprintf(fileName, sizeof(fileName), "tempFile%d", i);
 
         // Open output files in read mode.
-        in[i] = openFile(fileName, "r");
+        in[i] = openFile(fileName, (char*)"r");
     }
 
     // FINAL OUTPUT FILE
-    FILE *out = openFile(output_file, "w");
+    FILE *out = openFile(output_file, (char*)"w");
 
-    // Create a min heap with k heap nodes.  Every heap node
-    // has first element of scratch output file
-    MinHeapNode* harr = new MinHeapNode[k];
     int i;
     for (i = 0; i < k; i++) {
         // break if no output file is empty and
@@ -193,23 +131,41 @@ void mergeFiles(char *output_file, int n, int k)
         int value = 0;
         if (fscanf(in[i], "%d %d\n", &key, &value) != 2)
             break;
-        harr[i].element.key = to_string(key);
-        harr[i].element.value = to_string(value);
-
-        harr[i].i = i; // Index of scratch output file
+        MinHeapNode node;
+        node.element.key = to_string(key);
+        node.element.value = to_string(value);
+        node.i = i;
+        pq.push(node);
     }
-    MinHeap hp(harr, i); // Create the heap
 
     int count = 0;
 
+    MinHeapNode prev;
     // Now one by one get the minimum element from min
     // heap and replace it with next element.
     // run till all filled input files reach EOF
+    bool firstLine = true;
     while (count != i)
     {
         // Get the minimum element and store it in output file
-        MinHeapNode root = hp.getMin();
-        fprintf(out, "%s %s\n", root.element.key.c_str(), root.element.value.c_str());
+        MinHeapNode root = pq.top();
+        pq.pop();
+
+        if(root.element.key == prev.element.key) {
+            fprintf(out, " %s", root.element.value.c_str());
+        }
+        else {
+            if(firstLine) {
+                fprintf(out, "%s %s", root.element.key.c_str(), root.element.value.c_str());
+                firstLine = false;
+            }
+            else {
+                fprintf(out, "\n%s %s", root.element.key.c_str(), root.element.value.c_str());
+            }
+
+        }
+
+        prev = root;
 
         // Find the next element that will replace current
         // root of heap. The next element belongs to same
@@ -218,15 +174,13 @@ void mergeFiles(char *output_file, int n, int k)
         int value = 0;
         if (fscanf(in[root.i], "%d %d\n", &key, &value) != 2)
         {
-            root.element.key = to_string(INT_MAX);
-            root.element.value = to_string(INT_MAX);
             count++;
         }
-        root.element.key = to_string(key);
-        root.element.value = to_string(value);
-
-        // Replace root with next element of input file
-        hp.replaceMin(root);
+        else {
+            root.element.key = to_string(key);
+            root.element.value = to_string(value);
+            pq.push(root);
+        }
     }
 
     // close input and output files
@@ -242,28 +196,33 @@ void createInitialRuns(char *input_file, int run_size,
                        int num_ways)
 {
     // For big input file
-    FILE *in = openFile(input_file, "r");
+    FILE *in = openFile(input_file, (char*)"r");
 
     // output scratch files
     FILE* out[num_ways];
-    char fileName[2];
+    char fileName[20];
     for (int i = 0; i < num_ways; i++)
     {
         // convert i to string
-        snprintf(fileName, sizeof(fileName), "%d", i);
+        snprintf(fileName, sizeof(fileName), "tempFile%d", i);
 
         // Open output files in write mode.
-        out[i] = openFile(fileName, "w");
+        out[i] = openFile(fileName, (char*)"w");
     }
 
     // allocate a dynamic array large enough
     // to accommodate runs of size run_size
-    KVPair* arr = (KVPair*)malloc(run_size * sizeof(KVPair));
+    KVPair* arr = (KVPair*)malloc(int(run_size * 1.2) * sizeof(KVPair));
+    if(arr == NULL) {
+        cout << "Memory allocation failed!" << endl;
+        return;
+    }
 
     bool more_input = true;
     int next_output_file = 0;
 
     int i;
+    bool firstLine = true;
     while (more_input)
     {
         // write run_size elements into arr from input file
@@ -271,6 +230,13 @@ void createInitialRuns(char *input_file, int run_size,
         {
             int key = 0;
             int value = 0;
+            if (firstLine) {
+                if(fscanf(in, "%d\n", &key) != 1) {
+                    cout << "Error reading the first line - memory limitation!" << endl;
+                    return;
+                }
+                firstLine = false;
+            }
             if (fscanf(in, "%d %d\n", &key, &value) != 2)
             {
                 more_input = false;
@@ -279,7 +245,7 @@ void createInitialRuns(char *input_file, int run_size,
             //cout << key << " " << value << endl;
             arr[i].key = to_string(key);
             arr[i].value = to_string(value);
-            //cout << arr[i].key << " " << arr[i].value << endl;
+            //cout << arr[i].key << "$" << arr[i].value << endl;
         }
 
         // sort array using merge sort
@@ -322,27 +288,31 @@ ifstream::pos_type filesize(const char* filename)
 // Driver program to test above
 int main()
 {
-    // The size of each partition
+    cout << "Started prcocess ... " << endl;
+    // The size of each partition in term of key-value entries
     int run_size = 1000;
+    int element_size = 6500;
 
     char input_file[] = "input.txt";
     char output_file[] = "output.txt";
 
-    FILE* in = openFile(input_file, "w");
+    FILE* in = openFile(input_file, (char*)"w");
 
     srand(time(NULL));
 
     // generate input
-    for (int i = 0; i < 5000; i++)
-        fprintf(in, "%d %d\n", rand(), rand());
-
+    fprintf(in, "%d\n", run_size); // the first line is the memory limitation
+    for (int i = 0; i < element_size; i++)
+        fprintf(in, "%d %d\n", rand()%300, rand()%1000);
     fclose(in);
 
-    int fsize = filesize(input_file);
+    //int fsize = filesize(input_file);
     // No. of Partitions of input file.
-    int num_ways = ceil(double(fsize) / double(run_size));
+    int num_ways = ceil(double(element_size) / double(run_size));
 
     externalSort(input_file, output_file, num_ways, run_size);
+
+    cout << "Finished successfully! Check output.txt for the results:-)" << endl;
 
     return 0;
 }
