@@ -4,4 +4,4 @@ CFLAGS=-std=c++11
 all:
 	$(CC) $(CFLAGS) externalGroupBy.cpp -o externalGroupBy
 clean:
-	rm externalGroupBy tempFile* output.txt
+	rm externalGroupBy tempFile* output.txt testInput.txt testOutput.txt

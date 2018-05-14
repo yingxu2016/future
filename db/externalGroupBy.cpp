@@ -121,6 +121,8 @@ void mergeFiles(char *output_file) {
         fclose(in[i]);
     }
 
+    fprintf(out, "\n");
+
     fclose(out);
 }
 
@@ -168,7 +170,7 @@ void createInitialRuns(char *input_file) {
     while (more_input) {
         arr.clear();
         long long byteCount = 0;
-        // write run_size elements into arr from input file
+        // make sure not breaking the memory limit
         for (i = 0; byteCount < memoryLimitInBytes; i++) {
             char key[100];
             char value[100];
@@ -183,7 +185,7 @@ void createInitialRuns(char *input_file) {
             byteCount += k.key.size() + k.value.size();
         }
 
-        // sort array using merge sort
+        // sort array by comparing key first. If draw, compare value.
         sort(arr.begin(),arr.end(), [](KVPair& a, KVPair& b) {
             if(a.key ==b.key) {
                 return a.value < b.value;
@@ -191,9 +193,7 @@ void createInitialRuns(char *input_file) {
             return a.key < b.key;
         });
 
-        // write the records to the appropriate scratch output file
-        // can't assume that the loop runs to run_size
-        // since the last run's length may be less than run_size
+        // Write the records to the output file
         for (int j = 0; j < i; j++) {
             fprintf(out[next_output_file], "%s %s\n", arr[j].key.c_str(), arr[j].value.c_str());
         }
@@ -205,28 +205,20 @@ void createInitialRuns(char *input_file) {
     for (int i = 0; i < num_ways; i++) {
         fclose(out[i]);
     }
-
     fclose(in);
 }
 
 // For sorting data stored on disk
 void externalSort(char* input_file,  char *output_file) {
     // read the input file, create the initial runs,
-    // and assign the runs to the scratch output files
+    // and assign the runs to the output file
     createInitialRuns(input_file);
 
     // Merge the runs using the K-way merging
     mergeFiles(output_file);
 }
 
-// Driver program to test above
-int main(int argc, char *argv[])
-{
-    cout << "Started processing ... " << endl;
-    char input_file[] = "input.txt";
-    char output_file[] = "output.txt";
-
-    /*
+void generateInput(char* input_file) {
     // The size of each partition in term of bytes
     memoryLimitInBytes = 20000;
     int element_size = 6500;
@@ -239,12 +231,54 @@ int main(int argc, char *argv[])
     for (int i = 0; i < element_size; i++)
         fprintf(in, "%s %s\n", to_string(rand()%300).c_str(), to_string(rand()%1000).c_str());
     fclose(in);
-    */
+}
 
-    externalSort(input_file, output_file);
+static void show_usage(string name) {
+    std::cerr << "Usage: " << name << " <input file> <output file>" << endl;
+    std::cerr << "Usage: " << name << " --test" << endl << "Test mode will generate input file automatically.";
+}
 
-    cout << "Finished successfully!" << endl;
-    cout << "Check output.txt for the results:-)" << endl;
+// Driver program to test above
+int main(int argc, char *argv[]) {
+    if(argc != 2 && argc != 3) {
+        show_usage(argv[0]);
+        return 1;
+    }
+
+    if(argc == 2) {
+        string test = argv[1];
+        if(test != "--test") {
+            show_usage(argv[0]);
+            return 1;
+        }
+        char input_file[] = "testInput.txt";
+        char output_file[] = "testOutput.txt";
+        generateInput(input_file);
+
+        externalSort(input_file, output_file);
+
+        cout << "Test Finished successfully!" << endl;
+        cout << "Check " << input_file << " for input, and "<<output_file << " for the results:-)" << endl;
+    }
+
+    if(argc == 3) {
+        cout << "Started processing ... " << endl;
+
+        string input = argv[1];
+        char *input_file = new char[input.length() + 1];
+        strcpy(input_file, input.c_str());
+
+        string output = argv[2];
+        char *output_file = new char[input.length() + 1];
+        strcpy(output_file, output.c_str());
+
+        externalSort(input_file, output_file);
+        delete[] input_file;
+        delete[] output_file;
+
+        cout << "Finished successfully!" << endl;
+        cout << "Check " << argv[2] << " for the results:-)" << endl;
+    }
 
     return 0;
 }
