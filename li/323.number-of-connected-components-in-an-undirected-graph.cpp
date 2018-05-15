@@ -41,6 +41,7 @@ public:
         int ans=0;
         for (int i=0; i<n; ++i) {
             if (v[i]) continue;
+            ans++;
             s.push(i);
             while (!s.empty()) {
                 auto curr=s.top();
@@ -50,7 +51,6 @@ public:
                     if (!v[nei])
                         s.push(nei);
             }
-            ++ans;
         }
         return ans;
     }
@@ -70,6 +70,7 @@ public:
         int ans=0;
         for (int i=0; i<n; ++i) {
             if (v[i]) continue;
+            ans++;
             q.push(i);
             while (!q.empty()) {
                 auto curr=q.front();
@@ -79,7 +80,6 @@ public:
                     if (!v[nei])
                         q.push(nei);
             }
-            ++ans;
         }
         return ans;
     }
