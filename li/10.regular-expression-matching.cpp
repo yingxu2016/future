@@ -35,13 +35,14 @@ public:
             for (int j =1; j< col; j++) {
                 if (p[j-1] == '.' || p[j-1] == s[i-1]) {
                     dptable[i][j] = dptable[i-1][j-1];
-                } else if (p[j-1] == '*') {
+                }
+                else if (p[j-1] == '*') {
                     dptable[i][j] = dptable[i][j-2];
                     if (p[j-2] == '.' || p[j-2] == s[i-1]) {
                         dptable[i][j] = dptable[i][j] || dptable[i-1][j];
                     }
-                } else
-                {
+                }
+                else {
                     dptable[i][j]=false;
                 }
             }
