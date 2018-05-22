@@ -15,6 +15,8 @@
  *     const vector<NestedInteger> &getList() const;
  * };
  */
+
+// stack-based
 class NestedIterator {
 private:
     stack<NestedInteger> nodes;
@@ -49,6 +51,40 @@ public:
         }
 
         return false;
+    }
+};
+
+// recursive
+class NestedIterator {
+public:
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        pos = 0;
+        traverse(nestedList);
+    }
+
+    int next() {
+        return arr[pos++];
+    }
+
+    bool hasNext() {
+        return pos < arr.size();
+    }
+
+private:
+    vector<int> arr;
+    int pos;
+    void traverse(vector<NestedInteger>& nestedList) {
+        if(nestedList.empty()) {
+            return;
+        }
+        for(auto i : nestedList) {
+            if(i.isInteger()) {
+                arr.push_back(i.getInteger());
+            }
+            else {
+                traverse(i.getList());
+            }
+        }
     }
 };
 
