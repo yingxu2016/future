@@ -18,7 +18,7 @@ public:
     int helper(TreeNode* root, vector<vector<int>>& ans) {
         if(!root) return -1;
         int h = max(helper(root->left, ans), helper(root->right, ans)) + 1;
-        if((int)ans.size() - 1 < h) {
+        while(ans.size() < h + 1) {
             ans.push_back(vector<int>());
         }
         ans[h].push_back(root->val);
