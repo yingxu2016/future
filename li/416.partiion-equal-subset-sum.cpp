@@ -10,18 +10,19 @@ private:
         for (int i = start; i < n; ++i) {
             left -= nums[i];
 
-            // nums[i] > target: too greater to choose now!
-            if (nums[i] > target)    continue;
+            // nums[i] > target: too greater to choose
+            if(nums[i] > target) return false;
 
             // left == target: choose all the nums left
-            if (nums[i] == target || left == target)   return true;
+            if(nums[i] == target || left == target) return true;
 
             // choose nums[i] and go further
-            if (canReach(nums, n, i+1, target - nums[i], left)) return true;
+            if(canReach(nums, n, i+1, target - nums[i], left)) return true;
 
             // Do not choose nums[i], go further
+
             // left < target: no need to traversal
-            if (left < target)  return false;
+            if(left < target) return false;
         }
         return false;
     }
@@ -29,8 +30,8 @@ private:
 public:
     bool canPartition(vector<int>& nums) {
         int total = 0;
-        for(int num: nums)  total += num;
-        if(total & 1)   return false;
+        for(int num: nums) total += num;
+        if(total & 1) return false;
         // sort to be descending
         sort(nums.begin(), nums.end(), [](int a, int b) {
             return a > b;
