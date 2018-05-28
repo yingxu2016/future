@@ -21,21 +21,19 @@ public:
     }
 private:
     void helper(TreeNode* root, vector<int>& v) {
-        if(!root)
+        if(!root || !root->left || !root->right)
             return;
-        if(root->left && root->right) {
-            if(root->left->val == root->val)
-                helper(root->left, v);
-            else {
-                v.push_back(root->left->val);
-                return;
-            }
-            if(root->right->val == root->val)
-                helper(root->right, v);
-            else {
-                v.push_back(root->right->val);
-                return;
-            }
+        if(root->left->val == root->val)
+            helper(root->left, v);
+        else {
+            v.push_back(root->left->val);
+            return;
+        }
+        if(root->right->val == root->val)
+            helper(root->right, v);
+        else {
+            v.push_back(root->right->val);
+            return;
         }
     }
 };
