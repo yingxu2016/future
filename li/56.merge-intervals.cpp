@@ -21,8 +21,8 @@ public:
                 ans.push_back(curr);
                 curr = intervals[i];
             }
-            else if(curr.end < intervals[i].end) {
-                curr.end = intervals[i].end;
+            else {
+                curr.end = max(curr.end, intervals[i].end);
             }
         }
         ans.push_back(curr);
