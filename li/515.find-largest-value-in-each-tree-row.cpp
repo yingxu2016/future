@@ -7,6 +7,9 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+#include <climits>
+
 class Solution {
 public:
     vector<int> largestValues(TreeNode* root) {
