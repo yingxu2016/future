@@ -14,6 +14,7 @@ public:
                 l++;
                 r--;
             }
+            // Note: must use >=! Error if use > only
             else if(nums[mid] >= nums[l]) {
                 if(target >= nums[l] && target < nums[mid]) {
                     r = mid;
