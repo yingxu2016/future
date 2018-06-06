@@ -11,9 +11,8 @@ class BSTIterator {
 public:
     BSTIterator(TreeNode *root) {
         if(!root) return;
-        s.push(root);
-        while(root->left) {
-            s.push(root->left);
+        while(root) {
+            s.push(root);
             root = root->left;
         }
     }
@@ -29,10 +28,9 @@ public:
         int ans = n->val;
         s.pop();
         if(n->right) {
-            s.push(n->right);
             n = n->right;
-            while(n->left) {
-                s.push(n->left);
+            while(n) {
+                s.push(n);
                 n = n->left;
             }
         }
