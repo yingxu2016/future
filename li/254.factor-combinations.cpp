@@ -3,11 +3,10 @@ public:
     vector<vector<int>> getFactors(int n) {
         vector<vector<int>> ans;
         vector<int> cur;
-        int num = 2;
-        helper(n, ans, cur, num);
+        helper(n, ans, cur, 2);
         return ans;
     }
-    void helper(int n, vector<vector<int>>& ans, vector<int> cur, int num) {
+    void helper(int n, vector<vector<int>>& ans, vector<int>& cur, int num) {
         int s = sqrt(n);
         for(int i = num; i <= s; i++) {
             if(n % i == 0) {
