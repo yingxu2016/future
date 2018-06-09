@@ -1,3 +1,5 @@
+// Time: O(n*log(n)
+// Space: O(1)
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
@@ -11,6 +13,24 @@ public:
             }
         }
         return ans - 1;
+    }
+};
+
+// Time: O(n)
+// Space: O(n)
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size();
+        vector<int> papers(n+1);
+        // counting papers for each citation number
+        for (auto c : citations)
+            papers[min(n, c)]++;
+        // finding the h-index
+        int k = n;
+        for (int s = papers[n]; k > s; s += papers[k])
+            k--;
+        return k;
     }
 };
 
