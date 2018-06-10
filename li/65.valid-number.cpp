@@ -2,7 +2,7 @@ class Solution {
 public:
     bool isNumber(string s) {
         int i = 0;
-        // skip the whilespaces
+        // skip the whitespaces
         for(; s[i] == ' '; i++) {}
         // check the significand
         if(s[i] == '+' || s[i] == '-') i++; // skip the sign if exist
