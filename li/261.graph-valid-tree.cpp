@@ -13,6 +13,7 @@ public:
         }
         return true;
     }
+private:    
     int find(vector<int>& v, int i) {
         if(v[i] == -1) return i;
         return find(v, v[i]);
