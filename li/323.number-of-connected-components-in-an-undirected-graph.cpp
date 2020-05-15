@@ -1,29 +1,45 @@
 // union-find
 class Solution {
 public:
-    int countComponents(int n, vector<pair<int, int>>& edges) {
-        vector<int> v(n, -1);
-        for(auto i : edges) {
-            int x = find(v, i.first);
-            int y = find(v, i.second);
-            if(x != y) {
-                v[x] = y;
-            }
+    int countComponents(int n, vector<vector<int>>& edges) {
+        for (int i = 0; i < n; ++i) {
+            parents.push_back(i);
+            ranks.push_back(0);
+        }
+        for (auto i : edges) {
+            unionByRank(i[0], i[1]);
         }
         int ans = 0;
-        for(auto i : v) {
-            if(i == -1) {
+        for (int i = 0; i < n; i++) {
+            if (i == parents[i]) {
                 ans++;
             }
         }
         return ans;
     }
+    
 private:
-    int find(vector<int>& v, int i) {
-        if(v[i] == -1) {
-            return i;
+    vector<int> parents;
+    vector<int> ranks;
+    
+    // path compression
+    int find (int i) {
+        if (parents[i] == i) return parents[i];
+        return parents[i] = find(parents[i]);
+    }
+    
+    // union by rank
+    void unionByRank(int e0, int e1) {
+        int x = find(e0);
+        int y = find(e1);
+        if(x != y) {
+            if (ranks[x] > ranks[y]) parents[y] = x;
+            else if (ranks[x] < ranks[y]) parents[x] = y;
+            else {
+                parents[x] = y;
+                ranks[y]++;
+            }
         }
-        return find(v, v[i]);
     }
 };
 
