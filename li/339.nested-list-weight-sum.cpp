@@ -30,24 +30,22 @@
 class Solution {
 public:
     int depthSum(vector<NestedInteger>& nestedList) {
-        if(nestedList.empty()) {
-            return 0;
-        }
         int ans = 0;
-        for(int i = 0; i < nestedList.size(); i++) {
-            helper(nestedList[i], 1, ans);
+        for(auto i : nestedList) {
+            helper(i, 1, ans);
         }
         return ans;
     }
-    void helper(NestedInteger n, int d, int& ans) {
-        if(n.isInteger()) {
-            ans += n.getInteger() * d;
-        }
-        else {
-            vector<NestedInteger> v = n.getList();
-            for(int i = 0; i < v.size(); i++) {
-                helper(v[i], d + 1, ans);
+    
+private:
+    int helper(const NestedInteger& ni, int d, int& ans) {
+        if(ni.isInteger()) {
+            ans += ni.getInteger() * d;
+        } else {
+            for(auto i : ni.getList()) {
+                helper(i, d + 1, ans);
             }
         }
+        return ans;
     }
 };
