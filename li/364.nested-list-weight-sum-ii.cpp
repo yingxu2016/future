@@ -27,6 +27,38 @@
  *     const vector<NestedInteger> &getList() const;
  * };
  */
+
+// O(1) space
+class Solution {
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        int depth = getMaxDepth(nestedList);
+        sum = 0;
+        getSum(nestedList, depth);
+        return sum;
+    }
+private:
+    int sum;
+    
+    int getMaxDepth(vector<NestedInteger>& nestedList){
+        int depth = 1;
+        for(int i = 0; i < nestedList.size(); i++){
+            if(!nestedList[i].isInteger())
+                depth = max(depth, 1 + getMaxDepth(nestedList[i].getList()));
+        }
+        return depth;
+    }
+    
+    void getSum(vector<NestedInteger>& nestedList, int depth){
+        for(int i = 0; i < nestedList.size(); i++){
+            if(!nestedList[i].isInteger())
+                getSum(nestedList[i].getList(), depth-1);
+            else
+                sum +=nestedList[i].getInteger() * depth;
+        }
+    }
+};
+
 class Solution {
 public:
     int depthSumInverse(vector<NestedInteger>& nestedList) {
