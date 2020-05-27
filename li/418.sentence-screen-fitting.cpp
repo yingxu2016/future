@@ -3,6 +3,10 @@ public:
     int wordsTyping(vector<string>& sentence, int rows, int cols) {
         vector<int> dp(sentence.size(), 0);
         int n = sentence.size();
+        
+        // Construct DP
+        // dp[i] denotes how many words we have used to fill 
+        // the row of having word sentence[i] as the leading word
         for(int i = 0, prev = 0, len = 0; i < sentence.size(); ++i) {
             // remove the length of previous word and space
             if(i != 0 && len > 0) len -= sentence[i - 1].size() + 1;
