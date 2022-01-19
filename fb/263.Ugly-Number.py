@@ -1,6 +1,6 @@
 class Solution:
     def isUgly(self, n: int) -> bool:
-        if n <= 1:
+        if n < 1:
             return False
         while n > 1:
             if n % 2 == 0:
