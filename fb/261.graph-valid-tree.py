@@ -1,3 +1,5 @@
+# read solution, good explanation
+
 class UnionFind:
     def __init__(self, n):
         self.parent = [node for node in range(n)]
